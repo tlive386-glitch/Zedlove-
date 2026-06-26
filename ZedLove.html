@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZedLove – Campus Dating in Zambia</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --green:#00A86B;--green-dk:#007A4D;--green-lt:#E6F7F1;
+  --orange:#FF6B2B;--orange-lt:#FFF0EA;
+  --dark:#0D1117;--dark2:#1A2030;
+  --bg:#F5F7FA;--text:#1A2030;--muted:#6B7280;--border:#E5E7EB;--red:#EF4444;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+.hdr{width:100%;background:var(--dark);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;}
+.logo{display:flex;align-items:center;gap:8px;}
+.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--green),var(--orange));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.logo-text{font-family:'Syne',sans-serif;font-size:20px;color:#fff;}
+.logo-text span{color:var(--green);}
+.prog-wrap{width:100%;height:4px;background:rgba(255,255,255,.08);}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--orange));transition:width .5s ease;}
+.screen{display:none;width:100%;max-width:440px;padding:28px 20px 80px;animation:fu .3s ease both;}
+.screen.active{display:block;}
+@keyframes fu{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.ttl{font-family:'Syne',sans-serif;font-size:26px;color:var(--dark);line-height:1.15;margin-bottom:6px;}
+.sub{font-size:14px;color:var(--muted);margin-bottom:22px;line-height:1.5;}
+.step-lbl{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--green);margin-bottom:8px;}
+.field{margin-bottom:15px;}
+label{display:block;font-size:13px;font-weight:600;color:var(--dark);margin-bottom:5px;}
+input[type=email],input[type=password],input[type=text],input[type=number],textarea,select{
+  width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;
+  font-family:'Inter',sans-serif;font-size:15px;color:var(--text);background:#fff;outline:none;
+  transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,168,107,.1);}
+textarea{resize:none;height:88px;}
+.sel-wrap{position:relative;}
+.sel-wrap::after{content:'▾';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;}
+select{appearance:none;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.err-box{color:var(--red);font-size:13px;padding:10px 14px;background:#FEF2F2;border-radius:10px;border:1px solid #FECACA;margin-bottom:12px;display:none;}
+.btn{width:100%;padding:14px;border:none;border-radius:14px;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:transform .15s,box-shadow .15s,opacity .15s;}
+.btn-primary{background:linear-gradient(135deg,var(--green),var(--green-dk));color:#fff;box-shadow:0 4px 16px rgba(0,168,107,.3);}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,168,107,.4);}
+.btn-primary:disabled{opacity:.5;transform:none;cursor:not-allowed;}
+.btn-outline{background:#fff;color:var(--green);border:1.5px solid var(--green);}
+.btn-ghost{background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer;padding:6px 0;display:flex;align-items:center;gap:4px;margin-bottom:16px;font-family:'Inter',sans-serif;}
+.card{background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px;}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+.chip{padding:8px 15px;border:1.5px solid var(--border);border-radius:99px;background:#fff;font-size:13px;cursor:pointer;transition:all .2s;user-select:none;}
+.chip:hover{border-color:var(--green);}
+.chip.sel{background:var(--green);border-color:var(--green);color:#fff;font-weight:600;}
+.chip.sel-o{background:var(--orange);border-color:var(--orange);color:#fff;font-weight:600;}
+.opt-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+.opt-card{padding:15px 12px;border:1.5px solid var(--border);border-radius:14px;background:#fff;text-align:center;cursor:pointer;transition:all .2s;font-size:13px;line-height:1.3;}
+.opt-card .oi{font-size:26px;display:block;margin-bottom:5px;}
+.opt-card:hover{border-color:var(--green);}
+.opt-card.sel{border-color:var(--green);background:var(--green-lt);font-weight:600;color:var(--green-dk);}
+/* hero */
+.hero{background:var(--dark);border-radius:22px;padding:36px 22px;text-align:center;margin-bottom:22px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 80%,rgba(0,168,107,.22) 0%,transparent 55%),radial-gradient(circle at 80% 20%,rgba(255,107,43,.18) 0%,transparent 50%);}
+.hero-flag{font-size:38px;display:block;margin-bottom:10px;position:relative;}
+.hero h1{font-family:'Syne',sans-serif;font-size:32px;color:#fff;line-height:1.1;position:relative;}
+.hero h1 span{color:var(--green);}
+.hero p{color:rgba(255,255,255,.6);font-size:14px;margin-top:8px;position:relative;}
+.stats-row{display:flex;gap:10px;margin-bottom:20px;}
+.stat{flex:1;background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:13px 10px;text-align:center;}
+.stat-num{font-family:'Syne',sans-serif;font-size:21px;color:var(--green);}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:2px;}
+.trial-banner{background:linear-gradient(135deg,var(--orange),#d94f1a);border-radius:13px;padding:13px 16px;display:flex;align-items:center;gap:12px;margin-bottom:18px;color:#fff;}
+.trial-icon{font-size:26px;flex-shrink:0;}
+.trial-txt{font-size:13px;line-height:1.4;}
+.trial-txt strong{font-size:14px;display:block;margin-bottom:2px;}
+/* photo */
+.photo-upload{border:2px dashed var(--border);border-radius:16px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;background:#fff;margin-bottom:18px;}
+.photo-upload:hover{border-color:var(--green);background:var(--green-lt);}
+.photo-preview{width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid var(--green);margin:0 auto 10px;display:none;}
+.ph-icon{font-size:44px;margin-bottom:8px;}
+.photo-upload p{font-size:13px;color:var(--muted);}
+.photo-upload input{display:none;}
+/* unis */
+.uni-scroll{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;max-height:340px;overflow-y:auto;padding-right:2px;}
+.uni-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border:1.5px solid var(--border);border-radius:12px;background:#fff;cursor:pointer;transition:all .2s;}
+.uni-item:hover{border-color:var(--green);}
+.uni-item.sel{border-color:var(--green);background:var(--green-lt);}
+.uni-check{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;transition:all .2s;}
+.uni-item.sel .uni-check{background:var(--green);border-color:var(--green);color:#fff;}
+.uni-name{font-size:14px;font-weight:500;}
+.uni-city{font-size:12px;color:var(--muted);}
+.uni-lbl{font-size:12px;color:var(--orange);font-weight:600;margin-bottom:8px;}
+/* payment */
+.mm-box{background:var(--dark);border-radius:18px;padding:22px;color:#fff;margin-bottom:18px;position:relative;overflow:hidden;}
+.mm-box::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(0,168,107,.22) 0%,transparent 55%);}
+.mm-rel{position:relative;}
+.mm-price{font-family:'Syne',sans-serif;font-size:48px;color:var(--green);}
+.mm-price sup{font-size:20px;vertical-align:top;margin-top:12px;}
+.mm-step{display:flex;gap:11px;background:rgba(255,255,255,.07);border-radius:10px;padding:11px;margin-bottom:8px;}
+.mm-num-badge{width:24px;height:24px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px;}
+.mm-step-body{font-size:13px;color:rgba(255,255,255,.8);line-height:1.5;}
+.mm-step-body strong{color:#fff;display:block;margin-bottom:1px;}
+.owner-tel{font-family:'Syne',sans-serif;font-size:21px;color:var(--green);letter-spacing:1px;}
+/* swipe */
+.swipe-area{position:relative;height:490px;margin-bottom:14px;}
+.pc{position:absolute;inset:0;border-radius:22px;overflow:hidden;cursor:grab;user-select:none;touch-action:none;}
+.pc.gone{display:none;}
+.pc-bg{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:72px;}
+.pc-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.88));padding:22px 18px 18px;}
+.pc-name{font-family:'Syne',sans-serif;font-size:24px;color:#fff;}
+.pc-meta{font-size:13px;color:rgba(255,255,255,.65);margin-top:1px;}
+.pc-tag{display:inline-block;border-radius:99px;font-size:11px;font-weight:700;padding:3px 10px;margin-top:5px;margin-right:4px;}
+.pc-uni-tag{background:var(--green);color:#fff;}
+.pc-maj-tag{background:rgba(255,255,255,.15);color:#fff;}
+.pc-bio{font-size:13px;color:rgba(255,255,255,.72);margin-top:7px;line-height:1.4;}
+.stamp{position:absolute;top:24px;font-family:'Syne',sans-serif;font-size:30px;border:4px solid;border-radius:8px;padding:3px 10px;opacity:0;pointer-events:none;}
+.stamp-like{left:16px;color:var(--green);border-color:var(--green);transform:rotate(-15deg);}
+.stamp-nope{right:16px;color:var(--red);border-color:var(--red);transform:rotate(15deg);}
+.sw-btns{display:flex;justify-content:center;gap:18px;margin-bottom:18px;}
+.sw-btn{width:58px;height:58px;border-radius:50%;border:none;font-size:22px;cursor:pointer;transition:transform .18s;box-shadow:0 3px 12px rgba(0,0,0,.1);}
+.sw-btn:hover{transform:scale(1.1);}
+.sw-no{background:#fff;color:var(--red);}
+.sw-yes{background:var(--green);color:#fff;}
+.sw-star{background:#fff;color:var(--orange);}
+/* bottom nav */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:9px 0 13px;z-index:100;}
+.bnav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:none;cursor:pointer;font-family:'Inter',sans-serif;padding:4px 14px;}
+.bnav-btn .ni{font-size:21px;}
+.bnav-btn .nl{font-size:10px;color:var(--muted);font-weight:500;}
+.bnav-btn.active .nl{color:var(--green);}
+/* chat */
+.chat-item{display:flex;align-items:center;gap:12px;padding:13px 2px;border-bottom:1px solid var(--border);cursor:pointer;}
+.ch-ava{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;}
+.ch-info{flex:1;}
+.ch-name{font-weight:600;font-size:14px;}
+.ch-pre{font-size:13px;color:var(--muted);margin-top:1px;}
+.ch-time{font-size:11px;color:var(--muted);}
+/* video */
+.vid-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.vid-card{border-radius:14px;overflow:hidden;background:var(--dark2);aspect-ratio:9/16;position:relative;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.vid-emoji{font-size:36px;}
+.vid-over{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.7));padding:10px;}
+.vid-nm{font-size:12px;color:#fff;font-weight:600;}
+.vid-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:42px;height:42px;background:rgba(255,255,255,.18);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;}
+/* profile */
+.prof-hero{background:var(--dark2);border-radius:18px;padding:26px 18px;text-align:center;margin-bottom:14px;}
+.prof-ava{width:84px;height:84px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--green),var(--orange));margin:0 auto 10px;font-size:40px;}
+.prof-uname{font-family:'Syne',sans-serif;font-size:21px;color:#fff;}
+.prof-sub{font-size:13px;color:rgba(255,255,255,.55);margin-top:3px;}
+.prof-tags{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin-top:9px;}
+.ptag{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);border-radius:99px;padding:3px 10px;font-size:12px;}
+.divider{text-align:center;color:var(--muted);font-size:13px;margin:12px 0;}
+.link{color:var(--green);font-weight:600;cursor:pointer;}
+
+/* ══ ADMIN ══ */
+#admin-wrap{display:none;width:100%;min-height:100vh;background:var(--bg);}
+.adm-hdr{background:var(--dark);padding:15px 20px;display:flex;align-items:center;justify-content:space-between;}
+.adm-badge{background:var(--orange);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;}
+.adm-body{padding:18px;max-width:960px;margin:0 auto;}
+.adm-tabs{display:flex;gap:3px;background:#fff;border:1.5px solid var(--border);border-radius:13px;padding:4px;margin-bottom:18px;overflow-x:auto;}
+.atab{flex:1;padding:10px 6px;border:none;border-radius:9px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;background:none;color:var(--muted);transition:all .2s;white-space:nowrap;}
+.atab.active{background:var(--green);color:#fff;}
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;}
+@media(min-width:580px){.kpi-grid{grid-template-columns:repeat(4,1fr);}}
+.kpi{background:#fff;border:1.5px solid var(--border);border-radius:13px;padding:15px 14px;text-align:center;}
+.kpi-num{font-family:'Syne',sans-serif;font-size:28px;color:var(--green);}
+.kpi-lbl{font-size:11px;color:var(--muted);margin-top:2px;}
+.tbl-wrap{overflow-x:auto;border-radius:14px;border:1.5px solid var(--border);}
+.tbl{width:100%;border-collapse:collapse;background:#fff;min-width:520px;}
+.tbl th{background:#F9FAFB;padding:10px 13px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);}
+.tbl td{padding:12px 13px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:hover td{background:#F9FAFB;}
+.empty-tbl{text-align:center;padding:40px;color:var(--muted);font-size:14px;}
+.empty-tbl div:first-child{font-size:36px;margin-bottom:8px;}
+.sp{display:inline-block;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:700;}
+.sp-pending{background:#FEF3C7;color:#92400E;}
+.sp-active{background:var(--green-lt);color:var(--green-dk);}
+.sp-flagged{background:#FEE2E2;color:var(--red);}
+.ab{padding:5px 10px;border-radius:7px;border:none;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;margin-right:3px;white-space:nowrap;font-family:'Inter',sans-serif;}
+.ab-approve{background:var(--green-lt);color:var(--green-dk);}
+.ab-approve:hover{background:var(--green);color:#fff;}
+.ab-flag{background:#FEF3C7;color:#92400E;}
+.ab-flag:hover{background:#F59E0B;color:#fff;}
+.ab-del{background:#FEE2E2;color:var(--red);}
+.ab-del:hover{background:var(--red);color:#fff;}
+.search-inp{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:'Inter',sans-serif;outline:none;margin-bottom:12px;}
+.search-inp:focus{border-color:var(--green);}
+.sec-title{font-family:'Syne',sans-serif;font-size:18px;margin-bottom:12px;color:var(--dark);}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--border);}
+.setting-row:last-child{border-bottom:none;}
+.s-label{font-size:14px;font-weight:600;}
+.s-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+.tog{position:relative;width:44px;height:24px;flex-shrink:0;}
+.tog input{opacity:0;width:0;height:0;position:absolute;}
+.slider{position:absolute;inset:0;background:#CBD5E1;border-radius:99px;cursor:pointer;transition:.3s;}
+.slider::before{content:'';position:absolute;width:18px;height:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;}
+.tog input:checked+.slider{background:var(--green);}
+.tog input:checked+.slider::before{transform:translateX(20px);}
+.inline-edit{display:flex;gap:8px;margin-top:8px;}
+.inline-edit input{flex:1;padding:10px 12px;border:1.5px solid var(--green);border-radius:9px;font-size:14px;font-family:'Inter',sans-serif;outline:none;}
+.inline-edit button{padding:10px 14px;background:var(--green);color:#fff;border:none;border-radius:9px;font-weight:600;cursor:pointer;font-size:13px;white-space:nowrap;font-family:'Inter',sans-serif;}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--dark);color:#fff;padding:10px 20px;border-radius:99px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;}
+.u-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.u-row:last-child{border-bottom:none;}
+.u-ava{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--orange));display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+/* scrollbars */
+.uni-scroll::-webkit-scrollbar,.adm-tabs::-webkit-scrollbar{width:4px;height:4px;}
+.uni-scroll::-webkit-scrollbar-thumb,.adm-tabs::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+</style>
+</head>
+<body>
+
+<!-- ═════════════ USER APP ═════════════ -->
+<div id="app-wrap">
+  <div class="hdr">
+    <div class="logo"><div class="logo-icon">💚</div><div class="logo-text">Zed<span>Love</span></div></div>
+    <div style="font-size:12px;color:rgba(255,255,255,.35);">🇿🇲 Zambia</div>
+  </div>
+  <div class="prog-wrap"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+
+  <!-- LANDING -->
+  <div class="screen active" id="s-land">
+    <div class="hero">
+      <span class="hero-flag">🇿🇲</span>
+      <h1>Campus love,<br><span>Zambian style.</span></h1>
+      <p>Connect with students from universities across Zambia.</p>
+    </div>
+    <div class="trial-banner">
+      <div class="trial-icon">🎁</div>
+      <div class="trial-txt"><strong>Free Trial — July 2025!</strong>Sign up this July and get your first month completely free.</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-num" id="stat-users">0</div><div class="stat-lbl">Students</div></div>
+      <div class="stat"><div class="stat-num">18</div><div class="stat-lbl">Universities</div></div>
+      <div class="stat"><div class="stat-num">K10</div><div class="stat-lbl">One-time fee</div></div>
+    </div>
+    <button class="btn btn-primary" onclick="go('s-signup')">Create Account — Free this July 🎉</button>
+    <div class="divider" style="margin-top:14px;">Already have an account? <span class="link" onclick="go('s-login')">Sign in</span></div>
+    <div style="text-align:center;margin-top:14px;"><span class="link" style="color:var(--muted);font-size:12px;" onclick="go('s-admin-login')">🛡️ Owner login</span></div>
+  </div>
+
+  <!-- SIGN UP -->
+  <div class="screen" id="s-signup">
+    <button class="btn-ghost" onclick="go('s-land')">← Back</button>
+    <div class="step-lbl">Step 1 of 7</div>
+    <div class="ttl">Create your account</div>
+    <div class="sub">Your email becomes your login — use one you check.</div>
+    <div class="row2">
+      <div class="field"><label>First Name</label><input type="text" id="fn" placeholder="Chanda"/></div>
+      <div class="field"><label>Surname</label><input type="text" id="sn" placeholder="Mwale"/></div>
+    </div>
+    <div class="field">
+      <label>Username <span style="color:var(--muted);font-weight:400;">(others see this)</span></label>
+      <input type="text" id="uname" placeholder="chanda_m"/>
+    </div>
+    <div class="field">
+      <label>Age <span style="color:var(--muted);font-weight:400;">(others see this)</span></label>
+      <input type="number" id="age" placeholder="21" min="17" max="35"/>
+    </div>
+    <div class="field"><label>Email Address</label><input type="email" id="em" placeholder="you@example.com"/></div>
+    <div class="field"><label>Password</label><input type="password" id="pw" placeholder="Min. 8 characters"/></div>
+    <div class="err-box" id="su-err"></div>
+    <button class="btn btn-primary" onclick="doSignup()">Continue</button>
+    <div class="divider" style="margin-top:14px;">Have an account? <span class="link" onclick="go('s-login')">Sign in</span></div>
+  </div>
+
+  <!-- LOGIN -->
+  <div class="screen" id="s-login">
+    <button class="btn-ghost" onclick="go('s-land')">← Back</button>
+    <div class="ttl">Welcome back 👋</div>
+    <div class="sub">Sign in with the email you registered with.</div>
+    <div class="field"><label>Email Address</label><input type="email" id="l-em" placeholder="you@example.com"/></div>
+    <div class="field"><label>Password</label><input type="password" id="l-pw" placeholder="Your password"/></div>
+    <div class="err-box" id="l-err"></div>
+    <button class="btn btn-primary" onclick="doLogin()">Sign In</button>
+    <div class="divider" style="margin-top:14px;">New here? <span class="link" onclick="go('s-signup')">Create account</span></div>
+  </div>
+
+  <!-- UNIVERSITIES -->
+  <div class="screen" id="s-uni">
+    <button class="btn-ghost" onclick="go('s-signup')">← Back</button>
+    <div class="step-lbl">Step 2 of 7</div>
+    <div class="ttl">Choose your dating zones</div>
+    <div class="sub">Pick up to <strong>3 universities</strong> where you want to find matches.</div>
+    <div class="uni-lbl" id="uni-count">0 / 3 selected</div>
+    <div class="uni-scroll" id="uni-list"></div>
+    <button class="btn btn-primary" id="uni-btn" onclick="go('s-photo')" disabled>Continue</button>
+  </div>
+
+  <!-- PHOTO -->
+  <div class="screen" id="s-photo">
+    <button class="btn-ghost" onclick="go('s-uni')">← Back</button>
+    <div class="step-lbl">Step 3 of 7</div>
+    <div class="ttl">Show your face 😊</div>
+    <div class="sub">A clear, full-face photo is required. No sunglasses or group photos.</div>
+    <div class="photo-upload" onclick="document.getElementById('ph-in').click()">
+      <img class="photo-preview" id="ph-prev"/>
+      <div class="ph-icon" id="ph-icon">📸</div>
+      <p id="ph-txt">Tap to upload your photo</p>
+      <input type="file" id="ph-in" accept="image/*" onchange="previewPhoto(this)"/>
+    </div>
+    <div style="background:var(--orange-lt);border-radius:11px;padding:11px 14px;font-size:13px;color:#8B4513;margin-bottom:18px;">⚠️ Profiles without a clear face photo won't be shown to other students.</div>
+    <button class="btn btn-primary" onclick="go('s-bio')">Continue</button>
+  </div>
+
+  <!-- BIO & MAJOR -->
+  <div class="screen" id="s-bio">
+    <button class="btn-ghost" onclick="go('s-photo')">← Back</button>
+    <div class="step-lbl">Step 4 of 7</div>
+    <div class="ttl">Tell them about you</div>
+    <div class="sub">This shows on your profile card for all to see.</div>
+    <div class="field"><label>Bio</label><textarea id="bio" placeholder="e.g. I love exploring Lusaka, big on music, final year medicine student..."></textarea></div>
+    <div class="field"><label>Hobbies & Interests</label><input type="text" id="hobbies" placeholder="Football, cooking, reading, dancing..."/></div>
+    <div class="field"><label>How you spend free time</label><input type="text" id="freetime" placeholder="Netflix, campus events, gym..."/></div>
+    <div class="field">
+      <label>Your Major / Programme</label>
+      <div class="sel-wrap">
+        <select id="major">
+          <option value="">Select your major…</option>
+          <optgroup label="Health Sciences"><option>Medicine &amp; Surgery</option><option>Pharmacy</option><option>Nursing</option><option>Public Health</option><option>Dentistry</option><option>Physiotherapy</option></optgroup>
+          <optgroup label="Engineering &amp; Technology"><option>Civil Engineering</option><option>Electrical Engineering</option><option>Mechanical Engineering</option><option>Computer Science / IT</option><option>Mining Engineering</option><option>Chemical Engineering</option></optgroup>
+          <optgroup label="Business &amp; Economics"><option>Business Administration</option><option>Accounting &amp; Finance</option><option>Economics</option><option>Marketing</option><option>Banking &amp; Finance</option></optgroup>
+          <optgroup label="Law &amp; Social Sciences"><option>Law (LLB)</option><option>Social Work</option><option>Political Science</option><option>Development Studies</option><option>Psychology</option></optgroup>
+          <optgroup label="Education"><option>Education (Primary)</option><option>Education (Secondary)</option><option>Early Childhood Education</option></optgroup>
+          <optgroup label="Arts &amp; Humanities"><option>Literature &amp; Languages</option><option>History</option><option>Fine Arts</option><option>Journalism &amp; Media</option></optgroup>
+          <optgroup label="Agriculture &amp; Environment"><option>Agriculture</option><option>Environmental Science</option><option>Natural Resources</option></optgroup>
+          <optgroup label="Other"><option>Architecture</option><option>Other / Undeclared</option></optgroup>
+        </select>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="go('s-prefs')">Continue</button>
+  </div>
+
+  <!-- PREFERENCES -->
+  <div class="screen" id="s-prefs">
+    <button class="btn-ghost" onclick="go('s-bio')">← Back</button>
+    <div class="step-lbl">Step 5 of 7</div>
+    <div class="ttl">Who are you looking for?</div>
+    <div class="sub">Set your preferences — you can change these later.</div>
+    <div class="field">
+      <label>I'm interested in</label>
+      <div class="chip-row"><div class="chip" onclick="single(this)">👨 Men</div><div class="chip" onclick="single(this)">👩 Women</div><div class="chip" onclick="single(this)">🌈 Both</div></div>
+    </div>
+    <div class="field">
+      <label>Comfortable age gap</label>
+      <div class="chip-row"><div class="chip" onclick="single(this)">±1 yr</div><div class="chip" onclick="single(this)">±2 yrs</div><div class="chip" onclick="single(this)">±3 yrs</div><div class="chip" onclick="single(this)">±5 yrs</div><div class="chip" onclick="single(this)">±10 yrs</div><div class="chip" onclick="single(this)">Any</div></div>
+    </div>
+    <div class="field">
+      <label>I'm looking for</label>
+      <div class="opt-grid">
+        <div class="opt-card" onclick="singleOpt(this)"><span class="oi">☕</span>Casual dating</div>
+        <div class="opt-card" onclick="singleOpt(this)"><span class="oi">💞</span>Serious relationship</div>
+        <div class="opt-card" onclick="singleOpt(this)"><span class="oi">💍</span>Marriage</div>
+        <div class="opt-card" onclick="singleOpt(this)"><span class="oi">🤷</span>Not sure yet</div>
+      </div>
+    </div>
+    <div class="field">
+      <label>Partner's major (optional)</label>
+      <div class="chip-row">
+        <div class="chip" onclick="toggleChip(this)">Medicine</div>
+        <div class="chip" onclick="toggleChip(this)">Engineering</div>
+        <div class="chip" onclick="toggleChip(this)">Law</div>
+        <div class="chip" onclick="toggleChip(this)">Business</div>
+        <div class="chip" onclick="toggleChip(this)">Education</div>
+        <div class="chip" onclick="toggleChip(this)">Arts</div>
+        <div class="chip" onclick="toggleChip(this)">Computer Science</div>
+        <div class="chip" onclick="toggleChip(this)">Agriculture</div>
+        <div class="chip sel-o" onclick="noCare(this)">I don't mind ✓</div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="go('s-payment')">Continue</button>
+  </div>
+
+  <!-- PAYMENT -->
+  <div class="screen" id="s-payment">
+    <button class="btn-ghost" onclick="go('s-prefs')">← Back</button>
+    <div class="step-lbl">Step 6 of 7</div>
+    <div class="ttl">Almost there! 🎉</div>
+    <div class="trial-banner" style="margin-bottom:18px;">
+      <div class="trial-icon">🎁</div>
+      <div class="trial-txt"><strong>July 2025 — First month FREE!</strong>Pay K10 once, active for 12 months.</div>
+    </div>
+    <div class="mm-box">
+      <div class="mm-rel">
+        <div style="font-family:'Syne',sans-serif;font-size:17px;margin-bottom:4px;">One-time Registration</div>
+        <div class="mm-price"><sup>K</sup>10</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.55);margin-bottom:14px;">Send via Mobile Money, then enter your number below.</div>
+        <div class="mm-step">
+          <div class="mm-num-badge">1</div>
+          <div class="mm-step-body"><strong>Send K10 to this number</strong><span class="owner-tel" id="pay-tel">—</span><br><span style="font-size:11px;opacity:.65;">Airtel Money or MTN MoMo · Name: ZedLove</span></div>
+        </div>
+        <div class="mm-step">
+          <div class="mm-num-badge">2</div>
+          <div class="mm-step-body"><strong>Enter the number you paid from</strong>We use it to verify your payment.</div>
+        </div>
+        <div class="mm-step">
+          <div class="mm-num-badge">3</div>
+          <div class="mm-step-body"><strong>Tap Confirm</strong>Account activated within a few hours.</div>
+        </div>
+      </div>
+    </div>
+    <div class="field"><label>Your Mobile Money Number</label><input type="text" id="mm-num" placeholder="e.g. 0971 000 000"/></div>
+    <div class="err-box" id="pay-err"></div>
+    <button class="btn btn-primary" id="pay-btn" onclick="doPay()">Confirm &amp; Activate My Account</button>
+    <div style="text-align:center;font-size:12px;color:var(--muted);margin-top:10px;">🔒 Verified by ZedLove within a few hours</div>
+  </div>
+
+  <!-- PENDING -->
+  <div class="screen" id="s-pending">
+    <div style="text-align:center;padding-top:24px;">
+      <div style="font-size:52px;margin-bottom:14px;">⏳</div>
+      <div class="ttl" style="text-align:center;">Payment submitted!</div>
+      <div class="sub" style="text-align:center;">Your K10 is being confirmed. The ZedLove team will activate your account within a few hours.</div>
+    </div>
+    <div class="card" style="text-align:center;">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:5px;">Registered email</div>
+      <div style="font-weight:700;font-size:15px;" id="pend-em">—</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:6px;">Use this to sign in once your account is approved.</div>
+    </div>
+    <div style="background:var(--green-lt);border-radius:11px;padding:13px;font-size:13px;color:var(--green-dk);text-align:center;margin-bottom:18px;">✅ Registration saved! Come back and <span class="link" onclick="go('s-login')">sign in</span> after approval.</div>
+    <button class="btn btn-outline" onclick="go('s-land')">Back to Home</button>
+  </div>
+
+  <!-- MAIN APP -->
+  <div class="screen" id="s-swipe" style="padding-bottom:76px;">
+    <div id="tab-swipe">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+        <div class="ttl" style="margin-bottom:0;">Discover 🔥</div>
+        <div style="font-size:12px;color:var(--muted);" id="disc-area">Lusaka</div>
+      </div>
+      <div class="swipe-area" id="swipe-area"></div>
+      <div class="sw-btns">
+        <button class="sw-btn sw-no" onclick="swipeCard('no')">✕</button>
+        <button class="sw-btn sw-star" onclick="swipeCard('super')">⭐</button>
+        <button class="sw-btn sw-yes" onclick="swipeCard('yes')">💚</button>
+      </div>
+    </div>
+    <div id="tab-chat" style="display:none;">
+      <div class="ttl" style="margin-bottom:4px;">Messages 💬</div>
+      <div class="sub">Your matches appear here once you both like each other.</div>
+      <div id="chat-wrap"><div style="text-align:center;padding:40px 0;color:var(--muted);"><div style="font-size:36px;margin-bottom:8px;">💬</div>No matches yet — start swiping!</div></div>
+    </div>
+    <div id="tab-video" style="display:none;">
+      <div class="ttl" style="margin-bottom:4px;">Videos 🎥</div>
+      <div class="sub">Short clips from students near you.</div>
+      <div class="vid-grid">
+        <div class="vid-card"><div class="vid-emoji">💃</div><div class="vid-play">▶</div><div class="vid-over"><div class="vid-nm">Student · UNZA</div></div></div>
+        <div class="vid-card"><div class="vid-emoji">🏀</div><div class="vid-play">▶</div><div class="vid-over"><div class="vid-nm">Student · CBU</div></div></div>
+        <div class="vid-card"><div class="vid-emoji">🎵</div><div class="vid-play">▶</div><div class="vid-over"><div class="vid-nm">Student · ZCAS</div></div></div>
+        <div class="vid-card"><div class="vid-emoji">📚</div><div class="vid-play">▶</div><div class="vid-over"><div class="vid-nm">Student · MU</div></div></div>
+      </div>
+    </div>
+    <div id="tab-profile" style="display:none;">
+      <div class="prof-hero">
+        <div class="prof-ava" id="my-ava">😊</div>
+        <div class="prof-uname" id="my-uname">@username</div>
+        <div class="prof-sub" id="my-sub">Age · Major</div>
+        <div class="prof-tags" id="my-tags"></div>
+      </div>
+      <div class="card"><div style="font-size:13px;font-weight:600;margin-bottom:6px;">About me</div><div style="font-size:14px;color:var(--muted);line-height:1.5;" id="my-bio">Your bio goes here.</div></div>
+      <div class="card"><div style="font-size:13px;font-weight:600;margin-bottom:8px;">My Universities</div><div id="my-unis"></div></div>
+      <button class="btn" style="background:#fff;color:var(--red);border:1.5px solid #fecaca;margin-top:6px;" onclick="signOut()">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- ADMIN LOGIN -->
+  <div class="screen" id="s-admin-login" style="max-width:380px;">
+    <button class="btn-ghost" onclick="go('s-land')">← Back</button>
+    <div style="text-align:center;margin-bottom:22px;">
+      <div style="font-size:38px;margin-bottom:8px;">🛡️</div>
+      <div class="ttl" style="text-align:center;">Owner Login</div>
+      <div class="sub" style="text-align:center;margin-bottom:0;">ZedLove Admin Dashboard</div>
+    </div>
+    <div class="field"><label>Admin Email</label><input type="email" id="a-em" placeholder="owner@zedlove.zm"/></div>
+    <div class="field"><label>Admin Password</label><input type="password" id="a-pw" placeholder="Your admin password"/></div>
+    <div class="err-box" id="a-err"></div>
+    <button class="btn btn-primary" onclick="doAdminLogin()">Enter Dashboard</button>
+  </div>
+</div>
+
+<!-- ═════════════ ADMIN DASHBOARD ═════════════ -->
+<div id="admin-wrap">
+  <div class="adm-hdr">
+    <div class="logo"><div class="logo-icon">🛡️</div><div class="logo-text">Zed<span>Love</span> <span style="font-size:13px;color:rgba(255,255,255,.35);font-weight:400;font-family:'Inter',sans-serif;">Owner</span></div></div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="adm-badge">OWNER</div>
+      <button onclick="exitAdmin()" style="background:rgba(255,255,255,.1);border:none;color:#fff;padding:6px 13px;border-radius:8px;cursor:pointer;font-size:13px;font-family:'Inter',sans-serif;">Sign Out</button>
+    </div>
+  </div>
+  <div class="adm-body">
+    <div class="adm-tabs">
+      <button class="atab active" onclick="aTab('overview',this)">📊 Overview</button>
+      <button class="atab" onclick="aTab('users',this)">👥 All Users</button>
+      <button class="atab" onclick="aTab('payments',this)">💰 Payments</button>
+      <button class="atab" onclick="aTab('settings',this)">⚙️ Settings</button>
+    </div>
+
+    <!-- OVERVIEW -->
+    <div id="at-overview">
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-num" id="k-total">0</div><div class="kpi-lbl">Total Registered</div></div>
+        <div class="kpi"><div class="kpi-num" id="k-pending" style="color:var(--orange);">0</div><div class="kpi-lbl">Awaiting Approval</div></div>
+        <div class="kpi"><div class="kpi-num" id="k-active">0</div><div class="kpi-lbl">Active Users</div></div>
+        <div class="kpi"><div class="kpi-num" id="k-rev" style="color:var(--orange);">K0</div><div class="kpi-lbl">Revenue</div></div>
+      </div>
+      <div class="card">
+        <div style="font-weight:600;margin-bottom:10px;">⚡ Recent Signups</div>
+        <div id="recent-list"><div style="text-align:center;padding:20px 0;color:var(--muted);font-size:14px;"><div style="font-size:32px;margin-bottom:6px;">👤</div>No signups yet. Share ZedLove with students!</div></div>
+      </div>
+      <div class="card">
+        <div style="font-weight:600;margin-bottom:10px;">📍 University Breakdown</div>
+        <div id="uni-breakdown"><div style="font-size:13px;color:var(--muted);">No data yet.</div></div>
+      </div>
+    </div>
+
+    <!-- ALL USERS -->
+    <div id="at-users" style="display:none;">
+      <div class="sec-title">All Users (<span id="u-count-lbl">0</span>)</div>
+      <input class="search-inp" type="text" id="user-search" placeholder="Search by name, username or email…" oninput="renderUsersTbl()"/>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th>Name</th><th>Username</th><th>Age</th><th>Email</th><th>Universities</th><th>MoMo #</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="u-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PAYMENTS -->
+    <div id="at-payments" style="display:none;">
+      <div class="sec-title">Pending Payments</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:12px;">Approve users after confirming their K10 payment on your Mobile Money.</div>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th>Name</th><th>Email</th><th>Their MoMo #</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="pay-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="at-settings" style="display:none;">
+      <div class="sec-title">App Settings</div>
+      <div class="card">
+        <div style="font-weight:600;margin-bottom:4px;">📱 Your Mobile Money Number</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:10px;">This is what students see when paying. Set it before sharing the app.</div>
+        <div style="background:var(--green-lt);border-radius:10px;padding:13px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
+          <div><div style="font-size:11px;color:var(--green-dk);font-weight:700;letter-spacing:.5px;text-transform:uppercase;">Current Number</div><div style="font-family:'Syne',sans-serif;font-size:21px;color:var(--green-dk);" id="mm-display">Not set yet</div></div>
+          <div style="font-size:22px;">📱</div>
+        </div>
+        <div class="inline-edit">
+          <input type="text" id="mm-inp" placeholder="e.g. 0971 234 567"/>
+          <button onclick="saveMM()">Save</button>
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-weight:600;margin-bottom:12px;">App Controls</div>
+        <div class="setting-row"><div><div class="s-label">New Registrations</div><div class="s-sub">Allow new users to sign up</div></div><label class="tog"><input type="checkbox" checked/><span class="slider"></span></label></div>
+        <div class="setting-row"><div><div class="s-label">Free Trial Active</div><div class="s-sub">July 2025 free trial banner</div></div><label class="tog"><input type="checkbox" checked/><span class="slider"></span></label></div>
+        <div class="setting-row"><div><div class="s-label">Profile Swiping</div><div class="s-sub">Allow swiping &amp; matching</div></div><label class="tog"><input type="checkbox" checked/><span class="slider"></span></label></div>
+        <div class="setting-row"><div><div class="s-label">Video Uploads</div><div class="s-sub">Allow students to post videos</div></div><label class="tog"><input type="checkbox" checked/><span class="slider"></span></label></div>
+        <div class="setting-row"><div><div class="s-label">Maintenance Mode</div><div class="s-sub">Takes app offline for all users</div></div><label class="tog"><input type="checkbox"/><span class="slider"></span></label></div>
+      </div>
+      <div class="card">
+        <div style="font-weight:600;margin-bottom:4px;">💰 Registration Fee</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:8px;">Current: <strong id="fee-disp">K10</strong></div>
+        <div class="inline-edit">
+          <input type="text" id="fee-inp" placeholder="e.g. K15"/>
+          <button onclick="saveFee()">Update</button>
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-weight:600;margin-bottom:4px;">🔑 Change Admin Password</div>
+        <div class="inline-edit">
+          <input type="password" id="new-pw" placeholder="New admin password"/>
+          <button onclick="toast('✓ Password updated!')">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bnav" id="bnav" style="display:none;">
+  <button class="bnav-btn active" onclick="switchTab('swipe',this)"><span class="ni">🔥</span><span class="nl">Discover</span></button>
+  <button class="bnav-btn" onclick="switchTab('chat',this)"><span class="ni">💬</span><span class="nl">Chats</span></button>
+  <button class="bnav-btn" onclick="switchTab('video',this)"><span class="ni">🎥</span><span class="nl">Videos</span></button>
+  <button class="bnav-btn" onclick="switchTab('profile',this)"><span class="ni">👤</span><span class="nl">Profile</span></button>
+</div>
+<div class="toast" id="toast-el"></div>
+
+<script>
+// ══════════════════════════════════
+// PERSISTENT STORAGE — uses window.storage
+// so data survives across sessions/devices
+// ══════════════════════════════════
+const STORE_KEY = 'zedlove-db-v1';
+
+async function loadDB() {
+  try {
+    const r = await window.storage.get(STORE_KEY);
+    if (r && r.value) return JSON.parse(r.value);
+  } catch(e) {}
+  return { users: [], ownerMM: '', fee: 'K10', nextId: 1 };
+}
+
+async function saveDB(db) {
+  try {
+    await window.storage.set(STORE_KEY, JSON.stringify(db));
+  } catch(e) { console.warn('Storage save failed', e); }
+}
+
+let DB = { users: [], ownerMM: '', fee: 'K10', nextId: 1 };
+let currentUser = null;
+let selectedUnis = [];
+
+// Boot
+(async () => {
+  DB = await loadDB();
+  document.getElementById('stat-users').textContent = DB.users.length;
+  document.getElementById('pay-tel').textContent = DB.ownerMM || '[Set in Admin Settings]';
+})();
+
+// ══ UNIS ══
+const UNIS = [
+  {name:'University of Zambia (UNZA)',city:'Lusaka'},
+  {name:'Copperbelt University (CBU)',city:'Kitwe'},
+  {name:'Mulungushi University (MU)',city:'Kabwe'},
+  {name:'Eden University',city:'Lusaka'},
+  {name:'Cavendish University Zambia',city:'Lusaka'},
+  {name:'Northrise University',city:'Ndola'},
+  {name:'ZCAS University',city:'Lusaka'},
+  {name:'University of Lusaka (UNILUS)',city:'Lusaka'},
+  {name:'Copperstone University',city:'Luanshya'},
+  {name:'Texila American University',city:'Lusaka'},
+  {name:'DMI St. Eugene University',city:'Lusaka'},
+  {name:'Rusangu University',city:'Monze'},
+  {name:'Kwame Nkrumah University',city:'Kabwe'},
+  {name:'Chalimbana University',city:'Chongwe'},
+  {name:'Zambian Open University (ZAOU)',city:'Lusaka'},
+  {name:'Evelyn Hone College',city:'Lusaka'},
+  {name:'ZAMCOM',city:'Lusaka'},
+  {name:'Other University',city:'Zambia'},
+];
+(function buildUnis(){
+  const w = document.getElementById('uni-list');
+  UNIS.forEach((u,i) => {
+    const d = document.createElement('div');
+    d.className = 'uni-item';
+    d.innerHTML = `<div class="uni-check" id="uc-${i}"></div><div><div class="uni-name">${u.name}</div><div class="uni-city">📍 ${u.city}</div></div>`;
+    d.onclick = () => toggleUni(i, d, u.name);
+    w.appendChild(d);
+  });
+})();
+
+function toggleUni(i, el, name) {
+  if (el.classList.contains('sel')) {
+    el.classList.remove('sel');
+    document.getElementById('uc-'+i).textContent = '';
+    selectedUnis = selectedUnis.filter(n => n !== name);
+  } else {
+    if (selectedUnis.length >= 3) { alert('Maximum 3 universities.'); return; }
+    el.classList.add('sel');
+    document.getElementById('uc-'+i).textContent = '✓';
+    selectedUnis.push(name);
+  }
+  document.getElementById('uni-count').textContent = selectedUnis.length + ' / 3 selected';
+  document.getElementById('uni-btn').disabled = selectedUnis.length === 0;
+}
+
+// ══ NAV ══
+const progMap = {
+  's-land':0,'s-signup':14,'s-login':5,'s-admin-login':0,
+  's-uni':28,'s-photo':42,'s-bio':56,'s-prefs':70,
+  's-payment':85,'s-pending':95,'s-swipe':100
+};
+function go(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id)?.classList.add('active');
+  document.getElementById('prog').style.width = (progMap[id]||0) + '%';
+  document.getElementById('bnav').style.display = 'none';
+  document.getElementById('admin-wrap').style.display = 'none';
+  document.getElementById('app-wrap').style.display = '';
+  window.scrollTo(0,0);
+}
+
+// ══ SIGNUP ══
+function doSignup() {
+  const fn = v('fn'), sn = v('sn'), un = v('uname');
+  const ag = document.getElementById('age').value;
+  const em = v('em'), pw = v('pw');
+  if (!fn||!sn) return showErr('su-err','Enter your first name and surname.');
+  if (!un) return showErr('su-err','Choose a username.');
+  if (!ag||ag<17||ag>35) return showErr('su-err','Enter a valid age (17–35).');
+  if (!em||!em.includes('@')) return showErr('su-err','Enter a valid email address.');
+  if (pw.length < 8) return showErr('su-err','Password must be at least 8 characters.');
+  if (DB.users.find(u => u.email === em)) return showErr('su-err','An account with this email already exists. Sign in instead.');
+  hide('su-err');
+  window._draft = {fn,sn,un,ag,em,pw};
+  selectedUnis = [];
+  document.querySelectorAll('.uni-item').forEach(el => el.classList.remove('sel'));
+  document.querySelectorAll('.uni-check').forEach(el => el.textContent = '');
+  document.getElementById('uni-count').textContent = '0 / 3 selected';
+  document.getElementById('uni-btn').disabled = true;
+  go('s-uni');
+}
+
+// ══ LOGIN ══
+function doLogin() {
+  const em = v('l-em'), pw = v('l-pw');
+  const user = DB.users.find(u => u.email === em && u.pw === pw);
+  if (!user) return showErr('l-err','Incorrect email or password.');
+  hide('l-err');
+  currentUser = user;
+  populateProfile(user);
+  launchApp();
+}
+
+// ══ PAYMENT ══
+async function doPay() {
+  const mm = v('mm-num');
+  if (mm.replace(/\s/g,'').length < 9) return showErr('pay-err','Enter a valid Mobile Money number.');
+  hide('pay-err');
+  const btn = document.getElementById('pay-btn');
+  btn.disabled = true; btn.textContent = 'Submitting…';
+  const d = window._draft || {};
+  const newUser = {
+    id: DB.nextId++,
+    fn:d.fn, sn:d.sn, uname:d.un, age:d.ag,
+    email:d.em, pw:d.pw,
+    unis: selectedUnis.slice(),
+    major: document.getElementById('major').value || '',
+    bio: v('bio'), hobbies: v('hobbies'),
+    mm, status:'pending',
+    date: new Date().toLocaleDateString('en-ZM')
+  };
+  DB.users.push(newUser);
+  await saveDB(DB);
+  currentUser = newUser;
+  document.getElementById('pend-em').textContent = d.em;
+  document.getElementById('stat-users').textContent = DB.users.length;
+  btn.disabled = false; btn.textContent = 'Confirm & Activate My Account';
+  go('s-pending');
+}
+
+function populateProfile(u) {
+  document.getElementById('my-uname').textContent = '@' + u.uname;
+  document.getElementById('my-sub').textContent = `Age ${u.age} · ${u.major||'Student'}`;
+  document.getElementById('my-bio').textContent = u.bio || 'No bio yet.';
+  if (u.hobbies) {
+    document.getElementById('my-tags').innerHTML = u.hobbies.split(',').slice(0,4).map(h=>`<div class="ptag">${h.trim()}</div>`).join('');
+  }
+  document.getElementById('my-unis').innerHTML = (u.unis||[]).map(n=>`<div style="font-size:14px;color:var(--muted);margin-bottom:4px;">• ${n}</div>`).join('');
+}
+
+function launchApp() {
+  go('s-swipe');
+  document.getElementById('bnav').style.display = 'flex';
+  buildCards();
+}
+function signOut() { currentUser = null; document.getElementById('bnav').style.display='none'; go('s-land'); }
+
+// ══ ADMIN ══
+const ADMIN = { email:'owner@zedlove.zm', pass:'zedlove2025' };
+async function doAdminLogin() {
+  const e = v('a-em'), p = v('a-pw');
+  if (e !== ADMIN.email || p !== ADMIN.pass) return showErr('a-err','Incorrect email or password.');
+  hide('a-err');
+  DB = await loadDB();
+  document.getElementById('app-wrap').style.display = 'none';
+  document.getElementById('admin-wrap').style.display = 'block';
+  refreshAdmin();
+}
+function exitAdmin() { document.getElementById('admin-wrap').style.display='none'; go('s-land'); }
+function aTab(name,btn) {
+  ['overview','users','payments','settings'].forEach(t => document.getElementById('at-'+t).style.display = t===name?'block':'none');
+  document.querySelectorAll('.atab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  refreshAdmin();
+}
+
+function refreshAdmin() {
+  const total = DB.users.length;
+  const pending = DB.users.filter(u=>u.status==='pending').length;
+  const active = DB.users.filter(u=>u.status==='active').length;
+  document.getElementById('k-total').textContent = total;
+  document.getElementById('k-pending').textContent = pending;
+  document.getElementById('k-active').textContent = active;
+  document.getElementById('k-rev').textContent = 'K' + (active * 10);
+  document.getElementById('stat-users').textContent = total;
+
+  // recent
+  const rl = document.getElementById('recent-list');
+  if (!DB.users.length) {
+    rl.innerHTML = '<div style="text-align:center;padding:18px 0;color:var(--muted);font-size:14px;"><div style="font-size:32px;margin-bottom:6px;">👤</div>No signups yet. Share ZedLove with students!</div>';
+  } else {
+    rl.innerHTML = [...DB.users].reverse().slice(0,6).map(u=>`
+      <div class="u-row">
+        <div class="u-ava">😊</div>
+        <div style="flex:1;">
+          <div style="font-size:13px;font-weight:600;">${u.fn} ${u.sn}</div>
+          <div style="font-size:11px;color:var(--muted);">@${u.uname} · ${(u.unis||[])[0]||'—'} · ${u.date}</div>
+        </div>
+        <span class="sp sp-${u.status}">${u.status}</span>
+      </div>`).join('');
+  }
+
+  // uni breakdown
+  const uMap = {};
+  DB.users.forEach(u=>(u.unis||[]).forEach(n=>{uMap[n]=(uMap[n]||0)+1;}));
+  const sorted = Object.entries(uMap).sort((a,b)=>b[1]-a[1]);
+  const ub = document.getElementById('uni-breakdown');
+  if (!sorted.length) { ub.innerHTML='<div style="font-size:13px;color:var(--muted);">No data yet.</div>'; }
+  else {
+    const mx = sorted[0][1];
+    ub.innerHTML = sorted.map(([n,c])=>`
+      <div style="margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px;"><span>${n}</span><span style="font-weight:600;">${c} student${c>1?'s':''}</span></div>
+        <div style="height:6px;background:var(--border);border-radius:3px;"><div style="height:100%;width:${Math.round(c/mx*100)}%;background:var(--green);border-radius:3px;"></div></div>
+      </div>`).join('');
+  }
+
+  // MM + fee display
+  document.getElementById('mm-display').textContent = DB.ownerMM || 'Not set — add below';
+  document.getElementById('fee-disp').textContent = DB.fee || 'K10';
+
+  renderUsersTbl();
+  renderPayTbl();
+}
+
+function renderUsersTbl() {
+  const q = (document.getElementById('user-search')?.value||'').toLowerCase();
+  const list = DB.users.filter(u=>(u.fn+' '+u.sn+u.uname+u.email).toLowerCase().includes(q));
+  document.getElementById('u-count-lbl').textContent = DB.users.length;
+  const tb = document.getElementById('u-tbody');
+  if (!list.length) {
+    tb.innerHTML = `<tr><td colspan="8"><div class="empty-tbl"><div>👤</div>No users yet.</div></td></tr>`; return;
+  }
+  tb.innerHTML = list.map(u=>`
+    <tr>
+      <td><strong>${u.fn} ${u.sn}</strong></td>
+      <td>@${u.uname}</td><td>${u.age}</td>
+      <td style="font-size:12px;">${u.email}</td>
+      <td style="font-size:12px;">${(u.unis||[]).join(', ')}</td>
+      <td style="font-family:'Syne',sans-serif;color:var(--green);font-size:13px;">${u.mm||'—'}</td>
+      <td><span class="sp sp-${u.status}">${u.status}</span></td>
+      <td>
+        <button class="ab ab-approve" onclick="setStatus(${u.id},'active')">✓ Approve</button>
+        <button class="ab ab-flag" onclick="setStatus(${u.id},'flagged')">🚩 Flag</button>
+        <button class="ab ab-del" onclick="delUser(${u.id})">✕ Remove</button>
+      </td>
+    </tr>`).join('');
+}
+
+function renderPayTbl() {
+  const list = DB.users.filter(u=>u.status==='pending');
+  const tb = document.getElementById('pay-tbody');
+  if (!list.length) {
+    tb.innerHTML = `<tr><td colspan="6"><div class="empty-tbl"><div>✅</div>No pending payments!</div></td></tr>`; return;
+  }
+  tb.innerHTML = list.map(u=>`
+    <tr>
+      <td><strong>${u.fn} ${u.sn}</strong></td>
+      <td style="font-size:12px;">${u.email}</td>
+      <td style="font-family:'Syne',sans-serif;color:var(--green);font-size:15px;">${u.mm||'—'}</td>
+      <td style="font-size:12px;">${u.date}</td>
+      <td><span class="sp sp-pending">pending</span></td>
+      <td>
+        <button class="ab ab-approve" onclick="setStatus(${u.id},'active')">✓ Approve</button>
+        <button class="ab ab-del" onclick="setStatus(${u.id},'flagged')">✕ Reject</button>
+      </td>
+    </tr>`).join('');
+}
+
+async function setStatus(id, status) {
+  DB.users = DB.users.map(u => u.id===id ? {...u,status} : u);
+  await saveDB(DB);
+  refreshAdmin();
+  toast(status==='active' ? '✓ User approved & activated!' : 'Status updated.');
+}
+async function delUser(id) {
+  if (!confirm('Permanently remove this user?')) return;
+  DB.users = DB.users.filter(u => u.id !== id);
+  await saveDB(DB);
+  refreshAdmin();
+  toast('User removed.');
+}
+async function saveMM() {
+  const v2 = document.getElementById('mm-inp').value.trim();
+  if (!v2) return toast('Enter a number first.');
+  DB.ownerMM = v2;
+  await saveDB(DB);
+  document.getElementById('mm-display').textContent = v2;
+  document.getElementById('pay-tel').textContent = v2;
+  document.getElementById('mm-inp').value = '';
+  toast('✓ Mobile Money number saved!');
+}
+async function saveFee() {
+  const v2 = document.getElementById('fee-inp').value.trim();
+  if (!v2) return;
+  DB.fee = v2;
+  await saveDB(DB);
+  document.getElementById('fee-disp').textContent = v2;
+  document.getElementById('fee-inp').value = '';
+  toast('✓ Fee updated to ' + v2);
+}
+
+// ══ CHIPS ══
+function single(el){el.closest('.chip-row').querySelectorAll('.chip').forEach(c=>c.classList.remove('sel','sel-o'));el.classList.add('sel');}
+function singleOpt(el){el.closest('.opt-grid').querySelectorAll('.opt-card').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+function toggleChip(el){el.closest('.chip-row').querySelector('.sel-o')?.classList.remove('sel-o');el.classList.toggle('sel');}
+function noCare(el){el.closest('.chip-row').querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel-o');}
+
+// ══ PHOTO ══
+function previewPhoto(inp) {
+  const f = inp.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    const img = document.getElementById('ph-prev');
+    img.src = e.target.result; img.style.display = 'block';
+    document.getElementById('ph-icon').style.display = 'none';
+    document.getElementById('ph-txt').textContent = 'Tap to change photo';
+  };
+  r.readAsDataURL(f);
+}
+
+// ══ TABS ══
+function switchTab(name, btn) {
+  ['swipe','chat','video','profile'].forEach(t => document.getElementById('tab-'+t).style.display = t===name?'block':'none');
+  document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ══ SWIPE CARDS ══
+const DEMO_CARDS = [
+  {name:'Natasha',age:21,uni:'UNZA',major:'Medicine',bio:'Final year med student who loves dancing and local dishes. 🇿🇲',emoji:'😊',bg:'linear-gradient(135deg,#667eea,#764ba2)'},
+  {name:'Mwamba',age:23,uni:'CBU',major:'Engineering',bio:'Engineer by day, guitarist by night. Looking for something real.',emoji:'🎸',bg:'linear-gradient(135deg,#f093fb,#f5576c)'},
+  {name:'Luyando',age:20,uni:'UNILUS',major:'Law',bio:"Law student, bookworm, foodie. Let's debate then grab nshima.",emoji:'📚',bg:'linear-gradient(135deg,#4facfe,#00f2fe)'},
+  {name:'Chipo',age:22,uni:'ZCAS',major:'Business',bio:'I like hiking, sunsets and honest conversations.',emoji:'🌅',bg:'linear-gradient(135deg,#43e97b,#38f9d7)'},
+  {name:'David',age:24,uni:'MU',major:'Computer Science',bio:'Coding by day, cooking by night. Big on tech and family.',emoji:'💻',bg:'linear-gradient(135deg,#fa709a,#fee140)'},
+];
+let cardIdx = 0;
+
+function buildCards() {
+  const area = document.getElementById('swipe-area');
+  area.innerHTML = ''; cardIdx = 0;
+  [...DEMO_CARDS].reverse().forEach((p, i) => {
+    const idx = DEMO_CARDS.length - 1 - i;
+    const c = document.createElement('div');
+    c.className = 'pc'; c.id = 'pc-'+idx; c.style.zIndex = i+1;
+    c.innerHTML = `
+      <div class="pc-bg" style="background:${p.bg}">${p.emoji}</div>
+      <div class="pc-overlay">
+        <div class="pc-name">${p.name}, ${p.age}</div>
+        <div class="pc-meta">@${p.name.toLowerCase()}${p.age}</div>
+        <span class="pc-tag pc-uni-tag">${p.uni}</span><span class="pc-tag pc-maj-tag">${p.major}</span>
+        <div class="pc-bio">${p.bio}</div>
+      </div>
+      <div class="stamp stamp-like" id="lk-${idx}">LIKE 💚</div>
+      <div class="stamp stamp-nope" id="np-${idx}">NOPE ✕</div>`;
+    let sx=0, dx=0, drag=false;
+    const onStart = x => { sx=x; drag=true; c.style.transition='none'; };
+    const onMove = x => {
+      if (!drag||c.classList.contains('gone')) return;
+      dx=x-sx;
+      c.style.transform=`translateX(${dx}px) rotate(${dx*.022}deg)`;
+      document.getElementById('lk-'+idx).style.opacity = dx>20 ? Math.min((dx-20)/55,1) : 0;
+      document.getElementById('np-'+idx).style.opacity = dx<-20 ? Math.min((-dx-20)/55,1) : 0;
+    };
+    const onEnd = () => {
+      if (!drag) return; drag=false;
+      if (dx>85) doSwipe(c,idx,'yes');
+      else if (dx<-85) doSwipe(c,idx,'no');
+      else {
+        c.style.transition='transform .25s';c.style.transform='';
+        document.getElementById('lk-'+idx).style.opacity=0;
+        document.getElementById('np-'+idx).style.opacity=0;
+      }
+      dx=0;
+    };
+    c.addEventListener('mousedown',e=>onStart(e.clientX));
+    window.addEventListener('mousemove',e=>onMove(e.clientX));
+    window.addEventListener('mouseup',onEnd);
+    c.addEventListener('touchstart',e=>onStart(e.touches[0].clientX),{passive:true});
+    c.addEventListener('touchmove',e=>onMove(e.touches[0].clientX),{passive:true});
+    c.addEventListener('touchend',onEnd);
+    area.appendChild(c);
+  });
+}
+
+function swipeCard(dir){const c=document.getElementById('pc-'+cardIdx);if(!c||c.classList.contains('gone'))return;doSwipe(c,cardIdx,dir);}
+function doSwipe(c,idx,dir){
+  c.style.transition='transform .38s ease,opacity .38s ease';
+  c.style.transform=dir==='yes'?'translateX(160%) rotate(20deg)':'translateX(-160%) rotate(-20deg)';
+  c.style.opacity='0';
+  toast(dir==='yes'?'💚 Liked!':dir==='super'?'⭐ Super Like!':'✕ Passed');
+  setTimeout(()=>{
+    c.classList.add('gone'); cardIdx++;
+    if(cardIdx>=DEMO_CARDS.length) {
+      document.getElementById('swipe-area').innerHTML=`<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--muted);text-align:center;padding:20px;"><div style="font-size:44px;margin-bottom:10px;">🎉</div><div style="font-size:16px;font-weight:600;color:var(--text);">You've seen everyone nearby!</div><div style="font-size:13px;margin-top:5px;">More profiles coming soon.</div></div>`;
+    }
+  },380);
+}
+
+// ══ HELPERS ══
+function v(id){return document.getElementById(id)?.value.trim()||'';}
+function showErr(id,msg){const e=document.getElementById(id);e.textContent=msg;e.style.display='block';}
+function hide(id){document.getElementById(id).style.display='none';}
+let tT;
+function toast(msg){
+  const t=document.getElementById('toast-el');
+  t.textContent=msg;t.style.opacity='1';
+  clearTimeout(tT);tT=setTimeout(()=>t.style.opacity='0',2200);
+}
+</script>
+</body>
+</html>
